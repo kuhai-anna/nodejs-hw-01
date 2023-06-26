@@ -18,14 +18,15 @@ async function getContactById(contactId) {
 
 async function removeContact(contactId) {
   const contacts = await listContacts();
-  const contactbyId = await getContactById(contactId);
+  const index = contacts.findIndex((contact) => contact.id === contactId);
 
-  const newContactsArray = contacts.filter(
-    (contact) => contact.id !== contactId
-  );
+  if (index === -1) {
+    return null;
+  }
+  const [result] = contacts.splice(index, 1);
 
-  await fs.writeFile(contactsPath, JSON.stringify(newContactsArray, null, 2));
-  return contactbyId || null;
+  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
+  return result;
 }
 
 async function addContact(name, email, phone) {
